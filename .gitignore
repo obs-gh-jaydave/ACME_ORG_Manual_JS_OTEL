@@ -1,0 +1,54 @@
+# Node dependencies
+node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Typescript build outputs
+dist/
+build/
+
+# TS Node cache
+.tsnode/
+
+# TypeScript declaration maps
+*.d.ts.map
+
+# Env files
+.env
+.env.*
+!.env.example
+
+# IDE and editor directories and files
+.vscode/
+.idea/
+.DS_Store
+
+# Mac OS file
+._*
+
+# Optional npm cache directory
+.npm/
+
+# Yarn v2+ cache directory
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.yarn/patches
+
+# Coverage directory
+coverage/
+
+# Temp directories
+tmp/
+temp/
+
+# Any local configuration files
+*.local.json
+
+# Lock files
+package-lock.json
