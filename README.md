@@ -36,19 +36,27 @@ Manual instrumentation gives you **complete control** over span creation, parent
 
 ## Running Both Services
 
-1. **Install dependencies**:
+1. **Open the project folder in your first terminal window** (this will run Service A):
    ```bash
+   cd path/to/this/project
    npm install
-   ```
-2. **Run Service A (port 3000):**
-   ```bash
    npx ts-node src/server.ts
    ```
-3. **Run Service B (port 3001)**
+   - This starts Service A on **port 3000**
+2. **Open a second terminal window** (this will run Service B):
    ```bash
+   cd path/to/this/project
    npx ts-node src/service-b/server.ts
    ```
-4. **Test** via `http://localhost:3000/`, or visit in your browser. `Service A` calls `Service B` internally.
+3. **Confirm both services are running**
+    - Service A log output: `Server listening on http://localhost:3000`
+    - Service B log output: `Service B listening on http://localhost:3001`
+
+4. **Test** the distributed trace flow:
+   ```bash
+   curl http://localhost:3000/
+   ```
+   - `Service A` receives the request, creates an `incoming-request` span, calls `Service B`, which creates a `process-request` span. All share the same `trace ID`.
 
 ---
 
