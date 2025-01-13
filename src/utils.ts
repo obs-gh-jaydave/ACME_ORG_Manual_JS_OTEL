@@ -18,11 +18,12 @@ export function doOutgoingRequest(options: CoreOptions & (UriOptions | UrlOption
         }
     }, parentCtx);
 
-    propagation.inject(parentCtx, options.headers || (options.headers = {}), headersSetter);
+    // Inject trace context into outgoing request headers
+    propagation.inject(trace.setSpan(parentCtx, span), options.headers || (options.headers = {}), headersSetter);
 
     return new Promise((resolve, reject) => {
         context.with(trace.setSpan(parentCtx, span), () => {
-            originRequest(options, (error:Error | null, response: Response, body:any) => {
+            originRequest(options, (error: Error | null, response: Response, body: any) => {
                 if (error) {
                     span.recordException(error);
                     span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });

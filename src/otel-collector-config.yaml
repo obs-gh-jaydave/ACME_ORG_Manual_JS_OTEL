@@ -1,0 +1,21 @@
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: "0.0.0.0:4318"
+      grpc:
+        endpoint: "0.0.0.0:4317"
+processors:
+  batch:
+
+exporters:
+  otlphttp:
+    endpoint: "https://OBSERVE_TENANT.collect.observeinc.com/v2/otel"
+    headers:
+      Authorization: "Bearer OBSERVE_TOKEN"
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [otlphttp]

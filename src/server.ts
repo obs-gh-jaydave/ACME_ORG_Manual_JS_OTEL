@@ -31,9 +31,9 @@ async function main() {
 
     app.get('/', async (req: Request, res: Response) => {
         try {
-            // Simulate calling a downstream service
-            const { body } = await doOutgoingRequest({ url: 'http://worldtimeapi.org/api/timezone/Etc/UTC' });
-            res.send({ message: 'Hello, world!', downstream: JSON.parse(body) });
+            // Call downstream service (Service B)
+            const { body } = await doOutgoingRequest({ url: 'http://localhost:3001/process' });
+            res.send({ message: 'Service A', downstream: JSON.parse(body) });
         } catch (error) {
             res.status(500).send({ error: 'Failed to fetch downstream data' });
         }
