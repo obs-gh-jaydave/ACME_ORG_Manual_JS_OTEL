@@ -92,9 +92,9 @@ This output shows two spans:
 
 Notice that both share the same `traceId` (`ec7731a030df208e353a27d31d1dac31`). The `incoming-request` span was created first, and the `outgoing-request` span became its child by using the active context and `traceId`. This ensures that all related operations are tied together under one distributed trace.
 
-## How This Helps With Mapbox’s Problem
+## How This Helps With ACME’s Problem
 
-Mapbox has been experiencing issues with automatic instrumentation causing mismatched trace IDs and excessive spans. By following this example:
+ACME has been experiencing issues with automatic instrumentation causing mismatched trace IDs and excessive spans. By following this example:
 
 - He can manually extract context from incoming requests.
 - Create manual spans for incoming and outgoing requests.
