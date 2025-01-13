@@ -1,8 +1,8 @@
 config:
   target: "http://localhost:3000"
   phases:
-    - duration: 60
-      arrivalRate: 1000
+    - duration: 60 # simulates the test phase runs for 60 seconds 
+      arrivalRate: 1000 # simulates 1000 virtual users each second
 scenarios:
   - flow:
     - get:

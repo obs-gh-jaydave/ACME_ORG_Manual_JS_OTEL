@@ -36,43 +36,50 @@ Manual instrumentation gives you **complete control** over span creation, parent
 
 ## Running Both Services
 
-1. **Open the project folder in your first terminal window** (this will run Service A):
+1. **Terminal A** (Service A):
    ```bash
    cd path/to/this/project
    npm install
    npx ts-node src/server.ts
    ```
-   - This starts Service A on **port 3000**
-2. **Open a second terminal window** (this will run Service B):
+   - This starts `Service A` on **port 3000**
+2. **Terminal B** (Service B):
    ```bash
    cd path/to/this/project
    npx ts-node src/service-b/server.ts
    ```
-3. **Confirm both services are running**
+      - This starts `Service B` on **port 3001**
+3. **Terminal C** (Artillery Load Test):
+   ```bash
+   cd path/to/this/project/otel-traceid-test
+   npx artillery run artillery.yml
+   ```
+    - Sends high-rate GET requests (`/`) to `http://localhost:3000`.
+4. **Confirm both services are running**
     - Service A log output: `Server listening on http://localhost:3000`
     - Service B log output: `Service B listening on http://localhost:3001`
 
 4. **Test** the distributed trace flow:
-   ```bash
-   curl http://localhost:3000/
-   ```
+   - Run the commands for **Terminal C** that will create the load  
    - `Service A` receives the request, creates an `incoming-request` span, calls `Service B`, which creates a `process-request` span. All share the same `trace ID`.
 
 ---
 
-## Load Testing with Artillery
-
-An example Artillery config (`otel-traceid-test/artillery.yml`) sends 1000 RPS to `http://localhost:3000/`. After 60 seconds, you’ll see a large number of requests/trace data:
-
+## OTEL Collector Configuration
+1. Navigate to `src/otel-collector-config.yaml`
+2. Update the configuration and replace:
+   - `OBSERVE_TENANT`: your unique Observe tenant id 
+   - `OBSERVE_TOKEN`: your unique Observe access token
+  
+Start the collector to listen and forward traces to Observe: 
 ```bash
-cd otel-traceid-test
-npx artillery run artillery.yml
+docker run --rm -p 4317:4317 -p 4318:4318 \
+  -v $(pwd)/otel-collector-config.yaml:/etc/otel-collector-config.yaml \
+  otel/opentelemetry-collector:latest \
+  --config=/etc/otel-collector-config.yaml
 ```
-**Service A** receives these requests, starts an **"incoming-request"** span, then calls **Service B** with a child **"outgoing-request"** span. **Service B** starts its own **"process-request"** span. All share the same `trace ID`.
-
---- 
-## Verifying Distributed Traces
-- OTLP Endpoint: If sending to a Collector or SaaS vendor, check their UI for a single trace ID covering:
+## Viewing Distributed Traces
+- OTLP Endpoint: If sending to a Collector or Observe, check their UI for a single trace ID covering:
 	1.	`incoming-request` (Service A root)
 	2.	`outgoing-request` (Service A child)
 	3.	`process-request` (Service B child)
